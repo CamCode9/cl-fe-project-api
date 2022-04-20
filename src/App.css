@@ -19,3 +19,30 @@
   text-align: center;
   align-items: center;
 }
+
+@media screen and (min-width: 600px) {
+  .homeVideo {
+    align-items: center;
+    margin: auto;
+    padding: 100px;
+  }
+
+  iframe {
+    display: block;
+    border-style: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .homeVideo {
+    align-items: center;
+    margin: auto;
+    max-width: fit-content;
+    padding: 0;
+  }
+
+  iframe {
+    display: block;
+    border-style: none;
+  }
+}
