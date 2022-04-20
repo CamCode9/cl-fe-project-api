@@ -5,6 +5,8 @@ import Heading from "./components/Heading";
 import NavBar from "./components/Nav";
 import Articles from "./components/Articles";
 import Home from "./components/Home";
+import Topics from "./components/Topics";
+import SingleTopic from "./components/SingleTopic";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/articles" element={<Articles />} />
+          <Route path="/topics" element={<Topics />} />
+          <Route path="/topics/:topicName" element={<SingleTopic />} />
         </Routes>
       </div>
     </BrowserRouter>
