@@ -1,11 +1,13 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
+import {  Link } from "react-router-dom";
 import { getArticles } from '../utils/getArticles';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
+
 
 const Articles = () => {
     const [articles, setArticles] = useState([])
@@ -26,10 +28,11 @@ const Articles = () => {
                 {articles.map((article) => {
                     const articleTopic = article.topic.toUpperCase()
                     const articleBlurb = ' - ' + article.body.slice(0, 80) + '...'
-
+                    const articleLink = '/articles/' +  article.article_id;
 
                     return (
                         <>
+                        <Link to={articleLink} style={{ textDecoration: 'none' }}>
                         <ListItem alignItems="flex-start" key={article.article_id}>
                          <ListItemText
                          primary={article.title}
@@ -50,6 +53,7 @@ const Articles = () => {
                           />
                         
                         </ListItem>
+                        </Link>
                         <Divider component="li" />
                         </>
                     )
