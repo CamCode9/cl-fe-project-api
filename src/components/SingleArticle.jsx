@@ -3,13 +3,10 @@ import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import {  Link } from "react-router-dom";
 import { getArticleById } from '../utils/getArticleById';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import { Button, ListItemText } from '@mui/material';
+import { Button, ListItemText, Box, Paper, List, ListItem } from '@mui/material';
 import patchVote from '../utils/patchVote'
 import getComments from '../utils/getComments';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+
 
 
 import Divider from '@mui/material/Divider';
@@ -149,12 +146,7 @@ const SingleArticle = () => {
                             primary={comment.author}
                             secondary={comment.body} 
                         />
-                         {/* <ListItemText 
-                         sx={{alignContent: borderRight}}
-                            primary={'votes: ' + comment.votes}
-                          
-                        /> */}
-                        
+
                     </ListItem>
                          <Box sx={{ color: 'text.secondary', padding: '1em' }}>Votes: {comment.votes}</Box>
                          <Divider component="li" />
