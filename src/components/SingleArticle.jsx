@@ -5,13 +5,21 @@ import {  Link } from "react-router-dom";
 import { getArticleById } from '../utils/getArticleById';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { Button, ListItemText } from '@mui/material';
 import patchVote from '../utils/patchVote'
+import getComments from '../utils/getComments';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+
+
+import Divider from '@mui/material/Divider';
+
 
 const SingleArticle = () => {
     const [article, setArticle] = useState({});
-    const [voteCount, setVoteCount] = useState(0)
+    const [voteCount, setVoteCount] = useState(0);
     const [err, setErr] = useState(null);
+    const [comments, setComments] = useState([]);
     const {article_id} = useParams();
 
     useEffect(() => {
@@ -21,6 +29,14 @@ const SingleArticle = () => {
             setVoteCount(article.votes)
         })
     }, [article_id])
+
+    useEffect(() => {
+        getComments(article_id)
+        .then(comments => {
+            setComments(comments)
+        })
+    }, [article_id])
+
 
     const handleUpVoteClick = () => {
         setVoteCount((currCount) => currCount + 1);
@@ -120,6 +136,32 @@ const SingleArticle = () => {
               handleDownVoteClick()
           }}>Downvote</Button>
         </Box>
+        <List sx={
+            { width: '95%',
+             bgcolor: 'background.paper',
+              'padding-inline-start': '10px' }}>
+                  <h4>COMMENTS:</h4>
+            {comments.map((comment) => {
+                return (
+                    <> 
+                    <ListItem alignItems='flex-end' key={comment.comment_id}>
+                        <ListItemText 
+                            primary={comment.author}
+                            secondary={comment.body} 
+                        />
+                         {/* <ListItemText 
+                         sx={{alignContent: borderRight}}
+                            primary={'votes: ' + comment.votes}
+                          
+                        /> */}
+                        
+                    </ListItem>
+                         <Box sx={{ color: 'text.secondary', padding: '1em' }}>Votes: {comment.votes}</Box>
+                         <Divider component="li" />
+                   </>
+                )
+            })}
+        </List>
         </>
       );
 }
