@@ -9,17 +9,17 @@ const NavBar = () => {
       <div>
         <nav className="Nav_bar">
         <Link to="/">
-            <Button variant="outlined" size="small">
+            <Button variant="outlined" size="small" sx={{borderBlockColor: '#30c2ae', color: '#30c2ae'}}>
               Home
             </Button>
           </Link>
           <Link to="/articles">
-            <Button variant="outlined" size="small">
+            <Button variant="outlined" size="small" sx={{borderBlockColor: '#30c2ae', color: '#30c2ae'}}>
               Articles
             </Button>
           </Link>
           <Link to="/topics">
-            <Button variant="outlined" size="small">
+            <Button variant="outlined" size="small" sx={{borderBlockColor: '#30c2ae', color: '#30c2ae'}}>
               Topics
             </Button>
           </Link>
