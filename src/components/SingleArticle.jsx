@@ -3,22 +3,25 @@ import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import {  Link } from "react-router-dom";
 import { getArticleById } from '../utils/getArticleById';
-import { Button, ListItemText, Box, Paper, List, ListItem } from '@mui/material';
+import { Button, ListItemText, Box, Paper, List, ListItem, Divider, TextField } from '@mui/material';
 import patchVote from '../utils/patchVote'
 import getComments from '../utils/getComments';
+import getUser from '../utils/getUser';
+import postComment from '../utils/postComment';
 
-
-
-import Divider from '@mui/material/Divider';
 
 
 const SingleArticle = () => {
     const [article, setArticle] = useState({});
+    const [username, setUsername] = useState({username: 'cooljmessy'})
+    const [voteState, setVoteState] = useState(0)
     const [voteCount, setVoteCount] = useState(0);
     const [err, setErr] = useState(null);
     const [comments, setComments] = useState([]);
+    const [currComment, setCurrComment] = useState([])
     const {article_id} = useParams();
-
+    
+   
     useEffect(() => {
         getArticleById(article_id)
         .then(article => {
@@ -32,29 +35,47 @@ const SingleArticle = () => {
         .then(comments => {
             setComments(comments)
         })
-    }, [article_id])
+    }, [comments])
 
 
     const handleUpVoteClick = () => {
-        setVoteCount((currCount) => currCount + 1);
-        setErr(null)
-        patchVote(article.article_id, { inc_votes: 1 }).catch(err => {
-            setVoteCount((currCount) => currCount - 1);
-            setErr('Something went wrong, please try again.')
-        })
+        if(voteState === 0) {
+            setVoteCount((currCount) => currCount + 1);
+            setVoteState((state) => state + 1)
+            setErr(null)
+            patchVote(article.article_id, { inc_votes: 1 }).catch(err => {
+                setVoteCount((currCount) => currCount - 1);
+                setVoteState((state) => state - 1)
+                setErr('Something went wrong, please try again.')
+            })
+        }
     }
 
     const handleDownVoteClick = () => {
-        setVoteCount((currCount) => currCount - 1);
-        setErr(null)
-        patchVote(article.article_id, { inc_votes: -1 }).catch(err => {
-            setVoteCount((currCount) => currCount + 1);
-            setErr('Something went wrong, please try again.')
-        })
+        if(voteState === 1 ) {
+            setVoteCount((currCount) => currCount - 1);
+            setVoteState((state) => state - 1)
+            setErr(null)
+            patchVote(article.article_id, { inc_votes: -1 }).catch(err => {
+                setVoteCount((currCount) => currCount + 1);
+                setVoteState((state) => state + 1)
+                setErr('Something went wrong, please try again.')
+            })
+        }
     }
 
-    if (err) return <p>{err}</p>
-  
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        setCurrComment('Posting...')
+        getUser(username.username).catch(err => {setErr('Invalid username, please login to post a comment')})
+        const bodyToSend = {body: e.target.userComment.value, username: username.username, }
+        postComment(article.article_id, bodyToSend)
+        .catch(err => {setErr('Something went wrong, please try again')})
+        setCurrComment('')
+    }
+
+    if (err) return <p style={{margin: '10%'}}>{err}</p>
+
     return (
         <>
         <Box
@@ -124,31 +145,89 @@ const SingleArticle = () => {
           }}
         >
           <Paper elevation={4}> 
-          <p style={{'font-weight': 'bold'}}>Votes: {voteCount}</p>
+          <p style={{'fontWeight': 'bold'}}>Votes: {voteCount}</p>
           </Paper>
-          <Button variant="contained" sx={{background: '#30c2ae', 'font-weight': 'bold'}} onClick={() => {
+        
+          <Button variant="contained" sx={{background: '#30c2ae', 'fonWeight': 'bold'}} onClick={() => {
               handleUpVoteClick()
           }}>Upvote</Button>
-          <Button variant="contained" sx={{background: '#30c2ae', 'font-weight': 'bold'}} onClick={() => {
+
+          <Button variant="contained" sx={{background: '#30c2ae', 'fonWeight': 'bold'}} onClick={() => {
               handleDownVoteClick()
-          }}>Downvote</Button>
+          }}>Remove vote</Button>
         </Box>
+
+         
+
         <List sx={
             { width: '95%',
              bgcolor: 'background.paper',
-              'padding-inline-start': '10px' }}>
+              'paddingInlineStart': '10px' }}>
+                  <h4>POST A COMMENT:</h4>
+                  <form onSubmit={handleSubmit}>
+                  <TextField
+                  sx={{
+                      width: '95%'
+                    }}
+                    required
+               
+                    id="userComment"
+                    value={currComment}
+                    onChange={(e) => {setCurrComment(e.target.value)}}
+                    variant="standard"
+                    />  
+                    <Button 
+                        type='submit'
+                        sx={{background: '#30c2ae', margin: '1%'}}
+                        variant='contained'
+                        >
+                        Submit
+                    </Button>
+                    </form>
+
+
                   <h4>COMMENTS:</h4>
+
             {comments.map((comment) => {
+                   //FUNCTIONALITY OF COMMENT VOTE BUTTONS NOT WORKING YET
+                // let commentVotability = true
+                // let voteButton
+
+                // if (commentVotability) {
+                // voteButton =  <Button onClick={() => {handleCommentVote()}}>
+                // <p>&#11014;</p>
+                // </Button>
+                // } else  {
+                // voteButton =  <Button onClick={() => {handleCommentVote()}}>
+                // <p>&#10006;</p>
+                // </Button>
+                // }
+             
+
+                // const handleCommentVote = () => {
+                //     if(commentVotability) {
+                //         comment.votes += 1
+                //         commentVotability = false
+                //     } else {
+                //         comment.votes -= 1
+                //         commentVotability = true
+                //     }
+                //   }
+
                 return (
                     <> 
-                    <ListItem alignItems='flex-end' key={comment.comment_id}>
+                    <ListItem alignItems='flex-start' key={comment.comment_id}>
                         <ListItemText 
                             primary={comment.author}
                             secondary={comment.body} 
                         />
 
                     </ListItem>
-                         <Box sx={{ color: 'text.secondary', padding: '1em' }}>Votes: {comment.votes}</Box>
+                         <Box sx={{ color: 'text.secondary', padding: '1em' }} >
+                             Votes: {comment.votes}
+                            {/* {voteButton} */}
+                             
+                         </Box>
                          <Divider component="li" />
                    </>
                 )
