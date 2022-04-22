@@ -5,7 +5,11 @@ const newsApi = axios.create({
 });
 
 const postComment = (article_id, body) => {
-  return newsApi.post(`/api/articles/${article_id}/comments`, body);
+  return newsApi
+    .post(`/api/articles/${article_id}/comments`, body)
+    .then(({ data }) => {
+      return data.comment;
+    });
 };
 
 export default postComment;

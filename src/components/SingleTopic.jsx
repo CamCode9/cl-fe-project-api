@@ -34,9 +34,9 @@ const SingleTopic = () => {
                     const articleLink = '/articles/' +  article.article_id;
 
                     return (
-                        <>
+                        <React.Fragment key={article.article_id}>
                         <Link to={articleLink} style={{ textDecoration: 'none' }}>
-                        <ListItem alignItems="flex-start" key={article.article_id}>
+                        <ListItem alignItems="flex-start" >
                          <ListItemText
                          primary={article.title}
                         secondary={
@@ -58,7 +58,7 @@ const SingleTopic = () => {
                         </ListItem>
                         </Link>
                         <Divider component="li" />
-                        </>
+                        </React.Fragment>
                     )
                 })}
             </List>

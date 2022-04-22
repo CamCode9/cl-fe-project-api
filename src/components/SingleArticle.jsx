@@ -8,6 +8,7 @@ import patchVote from '../utils/patchVote'
 import getComments from '../utils/getComments';
 import getUser from '../utils/getUser';
 import postComment from '../utils/postComment';
+import CommentCard from './CommentCard';
 
 
 
@@ -56,7 +57,8 @@ const SingleArticle = () => {
             setVoteCount((currCount) => currCount - 1);
             setVoteState((state) => state - 1)
             setErr(null)
-            patchVote(article.article_id, { inc_votes: -1 }).catch(err => {
+            patchVote(article.article_id, { inc_votes: -1 })
+            .catch(err => {
                 setVoteCount((currCount) => currCount + 1);
                 setVoteState((state) => state + 1)
                 setErr('Something went wrong, please try again.')
@@ -70,7 +72,14 @@ const SingleArticle = () => {
         getUser(username.username).catch(err => {setErr('Invalid username, please login to post a comment')})
         const bodyToSend = {body: e.target.userComment.value, username: username.username, }
         postComment(article.article_id, bodyToSend)
+        .then((commentFromApi) => {
+            setComments((currComments) => [commentFromApi, ...currComments])
+        })
         .catch(err => {setErr('Something went wrong, please try again')})
+        //  getComments(article_id)
+        //     .then(comments => {
+        //         setComments(comments)
+        //     })
         setCurrComment('')
     }
 
@@ -163,6 +172,7 @@ const SingleArticle = () => {
             { width: '95%',
              bgcolor: 'background.paper',
               'paddingInlineStart': '10px' }}>
+                 
                   <h4>POST A COMMENT:</h4>
                   <form onSubmit={handleSubmit}>
                   <TextField
@@ -190,48 +200,21 @@ const SingleArticle = () => {
 
             {comments.map((comment) => {
                    //FUNCTIONALITY OF COMMENT VOTE BUTTONS NOT WORKING YET
-                // let commentVotability = true
-                // let voteButton
+                   
+                   return (
+                       <CommentCard 
+                       comment_id={comment.comment_id} 
+                       author={comment.author} 
+                       body={comment.body} 
+                       article_id={article_id}
+                       comments={comments}
+                       votes={comment.votes}
+                       key={comment.comment_id}/>
+                   )
 
-                // if (commentVotability) {
-                // voteButton =  <Button onClick={() => {handleCommentVote()}}>
-                // <p>&#11014;</p>
-                // </Button>
-                // } else  {
-                // voteButton =  <Button onClick={() => {handleCommentVote()}}>
-                // <p>&#10006;</p>
-                // </Button>
-                // }
-             
-
-                // const handleCommentVote = () => {
-                //     if(commentVotability) {
-                //         comment.votes += 1
-                //         commentVotability = false
-                //     } else {
-                //         comment.votes -= 1
-                //         commentVotability = true
-                //     }
-                //   }
-
-                return (
-                    <> 
-                    <ListItem alignItems='flex-start' key={comment.comment_id}>
-                        <ListItemText 
-                            primary={comment.author}
-                            secondary={comment.body} 
-                        />
-
-                    </ListItem>
-                         <Box sx={{ color: 'text.secondary', padding: '1em' }} >
-                             Votes: {comment.votes}
-                            {/* {voteButton} */}
-                             
-                         </Box>
-                         <Divider component="li" />
-                   </>
-                )
+            
             })}
+           
         </List>
         </>
       );
