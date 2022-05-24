@@ -1,4 +1,9 @@
-# Getting Started with Create React App
+# Overview
+During my time with the Northcoders Bootcamp, I was tasked with building a front end app for my previously created backend project. The intention is to mimic the functionality of forum sites like Reddit, while gaining practical knowledge for building a front end using React.
+
+This app has been deployed to Netlify, and can be viewed online here. Alternatively, if you would like to run the app locally, please follow the setup instructions.
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
